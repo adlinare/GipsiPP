@@ -1,13 +1,29 @@
 .presentation-shell {
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
+  height: 100svh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior-y: contain;
   position: relative;
   background:
     linear-gradient(135deg, rgba(20, 184, 166, 0.12), transparent 34%),
     linear-gradient(225deg, rgba(250, 204, 21, 0.1), transparent 32%),
     #eef3f7;
+}
+
+.presentation-shell::-webkit-scrollbar {
+  width: 10px;
+}
+
+.presentation-shell::-webkit-scrollbar-track {
+  background: #dbe7ee;
+}
+
+.presentation-shell::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border: 2px solid #dbe7ee;
+  border-radius: 999px;
 }
 
 .presentation-shell::before {
@@ -20,6 +36,16 @@
     linear-gradient(90deg, rgba(12, 19, 31, 0.06) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 82%);
+}
+
+.slide-frame {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  position: relative;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .slide {
@@ -37,6 +63,43 @@
     radial-gradient(circle at 100% 0%, rgba(45, 212, 191, 0.12), transparent 32%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
   box-shadow: 0 28px 90px rgba(15, 23, 42, 0.16);
+  opacity: 0.42;
+  filter: saturate(0.82);
+  transform: translateY(40px) scale(0.965);
+  transition:
+    opacity 520ms ease,
+    filter 520ms ease,
+    transform 640ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 520ms ease;
+  will-change: transform, opacity;
+}
+
+.slide-frame.is-active .slide {
+  opacity: 1;
+  filter: saturate(1);
+  transform: translateY(0) scale(1);
+  box-shadow: 0 34px 100px rgba(15, 23, 42, 0.2);
+}
+
+.slide-frame.is-active .title-block,
+.slide-frame.is-active .slide-content > :not(.title-block) {
+  animation: slideContentIn 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.slide-frame.is-active .slide-content > :not(.title-block) {
+  animation-delay: 90ms;
+}
+
+@keyframes slideContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .slide-header,
@@ -556,6 +619,12 @@ h1 {
   align-content: center;
 }
 
+.architecture-note {
+  max-width: 980px;
+  justify-self: center;
+  text-align: center;
+}
+
 .architecture-diagram {
   display: grid;
   grid-template-columns: 1fr 80px 1.05fr 1.15fr;
@@ -717,6 +786,36 @@ h1 {
   color: #475569;
   font-size: 17px;
   line-height: 1.45;
+}
+
+.stack-mini-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.stack-mini-section strong,
+.stack-mini-section span {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.stack-mini-section strong {
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #dbe3ea;
+}
+
+.stack-mini-section span {
+  color: #155e75;
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
 }
 
 .mini-phone-row {
@@ -1249,6 +1348,10 @@ h1 {
   grid-template-columns: 1fr 340px;
 }
 
+.notification-note {
+  margin-top: 18px;
+}
+
 .event-cloud {
   margin-top: 22px;
 }
@@ -1754,8 +1857,7 @@ h1 {
     overflow: visible;
   }
 
-  .presentation-shell {
-    align-items: start;
+  .slide-frame {
     padding: 12px;
   }
 
@@ -1832,7 +1934,7 @@ h1 {
 }
 
 @media (max-width: 720px) {
-  .presentation-shell {
+  .slide-frame {
     padding: 0;
   }
 

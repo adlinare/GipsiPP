@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const iconPaths = {
@@ -577,25 +577,25 @@ const slides = [
       <div className="two-column">
         <div>
           <p className="lead small">
-            Muchos negocios de servicios combinan agendas manuales, mensajes sueltos y herramientas
-            separadas para atender clientes y coordinar equipos.
+            Peluquerías, clínicas y estudios gestionan reservas, trabajadores, horarios, ausencias y
+            clientes con herramientas dispersas o procesos manuales.
           </p>
           <BulletList
             items={[
-              'Reservas, cancelaciones y cambios dispersos en varios canales.',
-              'Horarios, ausencias y disponibilidad difíciles de mantener sincronizados.',
-              'Servicios, categorías, trabajadores, imágenes y clientes sin una vista central.',
+              'Reservas caóticas, sin control fiable de solapes ni disponibilidad real.',
+              'Gestión fragmentada de trabajadores, horarios, ausencias, servicios y clientes.',
+              'Clientes sin una presencia móvil sencilla para reservar, consultar o cancelar.',
               'Reseñas y reputación desconectadas del historial real de citas.',
             ]}
           />
         </div>
         <div className="problem-map">
           {[
-            ['Clientes', 'Reservan y cancelan', 'users'],
-            ['Agenda', 'Horarios y huecos', 'calendar'],
-            ['Equipo', 'Trabajadores y ausencias', 'clock'],
-            ['Reputación', 'Reviews y respuestas', 'star'],
-            ['Catálogo', 'Servicios y categorías', 'layers'],
+            ['Reservas caóticas', 'Cambios dispersos y riesgo de solapes', 'calendar'],
+            ['Gestión fragmentada', 'Equipo, horarios y ausencias en sistemas distintos', 'layers'],
+            ['Sin presencia móvil', 'Reserva y consulta poco accesibles para el cliente', 'phone'],
+            ['Reputación aislada', 'Reviews sin vínculo claro con citas reales', 'star'],
+            ['Operativa manual', 'Más carga diaria para el negocio', 'settings'],
           ].map(([title, text, icon]) => (
             <InfoTile key={title} icon={icon} title={title} text={text} tone="neutral" />
           ))}
@@ -611,13 +611,13 @@ const slides = [
         <PhoneMockup variant="booking" />
         <div className="solution-copy">
           <p className="lead small">
-            Gipsi centraliza la experiencia del cliente y la operativa interna del negocio con una
-            API preparada para autenticación, disponibilidad y gestión de reservas.
+            Gipsi centraliza toda la operativa de un negocio de servicios en una app móvil conectada
+            a una API REST preparada para autenticación, disponibilidad y reservas.
           </p>
           <div className="feature-grid">
-            <InfoTile icon="search" title="Explorar" text="Negocios, categorías, ciudad y servicios." tone="blue" />
-            <InfoTile icon="calendar" title="Reservar" text="Disponibilidad por servicio, trabajador y horario." tone="green" />
-            <InfoTile icon="settings" title="Administrar" text="Servicios, equipo, ausencias, imágenes y reviews." tone="amber" />
+            <InfoTile icon="search" title="Explorar negocios" text="Búsqueda por ciudad, categoría y texto." tone="blue" />
+            <InfoTile icon="calendar" title="Reservar servicios" text="Selección de trabajador, horario y confirmación." tone="green" />
+            <InfoTile icon="settings" title="Administrar operaciones" text="Horarios, ausencias, reseñas y fichaje." tone="amber" />
           </div>
         </div>
       </div>
@@ -629,6 +629,11 @@ const slides = [
     body: (
       <div className="architecture-layout">
         <ArchitectureDiagram />
+        <p className="support-text architecture-note">
+          Sistema distribuido en capas: Flutter consume una API REST stateless; Spring Boot valida,
+          procesa y persiste en PostgreSQL, delegando notificaciones, archivos y email a servicios
+          externos.
+        </p>
         <div className="role-strip">
           {roles.map((role, index) => (
             <Pill key={role} tone={['blue', 'green', 'cyan', 'amber'][index]}>
@@ -659,9 +664,15 @@ const slides = [
           <Icon name="phone" />
           <h3>Frontend Flutter</h3>
           <p>
-            Cliente móvil multiplataforma conectado a la API REST, pensado para cliente, negocio y
-            trabajador.
+            App iOS y Android con cliente HTTP REST, navegación, gestión de estado e integración con
+            notificaciones push.
           </p>
+          <div className="stack-mini-section">
+            <strong>Infraestructura</strong>
+            <span>Firebase Storage</span>
+            <span>Firebase Email</span>
+            <span>Firebase Admin SDK</span>
+          </div>
           <div className="mini-phone-row">
             <span></span>
             <span></span>
@@ -679,8 +690,8 @@ const slides = [
         <DomainDiagram />
         <div>
           <p className="lead small">
-            El modelo separa identidad, negocio, agenda, reservas, reputación, notificaciones y
-            sesiones para mantener reglas claras.
+            El dominio se articula en tres ejes: actores, oferta y operativa. RefreshToken sostiene
+            sesiones persistentes y DeviceToken habilita las notificaciones push.
           </p>
           <div className="entity-cloud">
             {domainEntities.map((entity) => (
@@ -713,31 +724,31 @@ const slides = [
   },
   {
     eyebrow: '08 / Seguridad',
-    title: 'Autenticacion y seguridad',
+    title: 'Autenticación y seguridad',
     body: (
       <div className="security-layout">
         <TokenFlow />
         <div className="security-grid">
-          <InfoTile icon="lock" title="BCrypt" text="Hash de contraseñas antes de persistir." tone="blue" />
-          <InfoTile icon="shield" title="JWT" text="Access tokens para peticiones autenticadas." tone="green" />
-          <InfoTile icon="migration" title="Refresh rotation" text="Rotación de refresh tokens por sesión." tone="cyan" />
-          <InfoTile icon="settings" title="CORS configurable" text="Origenes permitidos por entorno." tone="amber" />
-          <InfoTile icon="clock" title="Rate limiting" text="Protección en login y registro con Bucket4j." tone="rose" />
+          <InfoTile icon="lock" title="BCrypt" text="Hash de contraseñas con coste configurable." tone="blue" />
+          <InfoTile icon="shield" title="JWT" text="Access token de corta vida para cada petición." tone="green" />
+          <InfoTile icon="migration" title="Refresh rotation" text="Rotación, renovación y revocación de sesión." tone="cyan" />
+          <InfoTile icon="settings" title="CORS configurable" text="Orígenes permitidos gestionados por entorno." tone="amber" />
+          <InfoTile icon="clock" title="Rate limiting" text="Bucket4j limita intentos de login y registro." tone="rose" />
           <InfoTile icon="mail" title="Verificación email" text="Flujo de confirmación de cuenta." tone="neutral" />
         </div>
       </div>
     ),
   },
   {
-    eyebrow: '09 / Catalogo',
+    eyebrow: '09 / Catálogo',
     title: 'Negocios, servicios y categorías',
     body: (
       <div className="catalog-layout">
         <PhoneMockup variant="explore" />
         <div className="catalog-copy">
           <p className="lead small">
-            La búsqueda combina texto, ciudad y categoría para descubrir negocios y servicios con
-            imágenes de perfil, portada y catálogo dinámico.
+            Los clientes exploran negocios con búsqueda por texto, ciudad y categoría. Cada negocio
+            publica portada, galería y servicios con duración y precio.
           </p>
           <div className="category-cloud">
             {categoryExamples.map((category) => (
@@ -747,7 +758,7 @@ const slides = [
           <BulletList
             items={[
               'Categorías dinámicas administrables.',
-              'Imagenes de negocio, portada y servicios.',
+              'Imágenes de negocio, portada, galería y servicios.',
               'Sectores variados: salud, belleza, clases y servicios creativos.',
             ]}
           />
@@ -762,13 +773,13 @@ const slides = [
       <div className="availability-layout">
         <div>
           <p className="lead small">
-            El núcleo calcula slots de 15 minutos usando duración del servicio, horario laboral,
-            trabajador asignado, negocio autónomo, TimeOff y ausencias aprobadas.
+            El núcleo valida en tiempo real slots de 15 minutos usando duración del servicio, horario
+            laboral, trabajador asignado, negocio autónomo, TimeOff y ausencias aprobadas.
           </p>
           <BulletList
             items={[
-              'Validación de solapes antes de crear o confirmar una cita.',
-              'Estados de reserva: PENDING, CONFIRMED y CANCELED.',
+              'Validación de solapes con reservas existentes, TimeOff y ausencias.',
+              'Estados de reserva: PENDING → CONFIRMED o CANCELED.',
               'Razón de indisponibilidad por slot para explicar bloqueos.',
             ]}
           />
@@ -793,12 +804,12 @@ const slides = [
       <div className="booking-management-layout">
         <div className="operation-board">
           {[
-            ['Crear reserva', 'Cliente, servicio, trabajador y hora'],
-            ['Confirmar', 'Validacion final de disponibilidad'],
-            ['Cancelar con motivo', 'Trazabilidad de la causa'],
-            ['Consultar', 'Por cliente, trabajador o negocio'],
-            ['Reasignar trabajador', 'Cambio controlado de agenda'],
-            ['Buscar disponibles', 'Trabajadores aptos para una cita'],
+            ['Crear reserva', 'Cliente, servicio, trabajador y franja disponible'],
+            ['Confirmar', 'Validación final por parte del negocio'],
+            ['Cancelar con motivo', 'Cancelación trazable con causa registrada'],
+            ['Consultar', 'Filtros por cliente, trabajador o negocio'],
+            ['Reasignar trabajador', 'Cambio dinámico sin perder la cita'],
+            ['Buscar disponibles', 'Trabajadores libres para fecha y servicio'],
           ].map(([title, text], index) => (
             <div className={`operation-card op-${index}`} key={title}>
               <strong>{title}</strong>
@@ -824,15 +835,15 @@ const slides = [
           {[
             ['Schedule', 'Horario laboral base'],
             ['TimeOff', 'Bloqueos planificados'],
-            ['Absence', 'Solicitud aprobable'],
-            ['TimeClock', 'Entrada, salida y turno'],
+            ['Absence', 'Solicitud con fechas, motivo y aprobación'],
+            ['TimeClock', 'Entrada, salida y recordatorio de turno'],
           ].map(([title, text]) => (
             <InfoTile key={title} icon="clock" title={title} text={text} tone="blue" />
           ))}
         </div>
         <p className="support-text">
-          Los fichajes de entrada y salida permiten registrar presencia, y los recordatorios ayudan a
-          anticipar el inicio de turno.
+          Cuando el negocio aprueba o rechaza una ausencia, el sistema detecta conflictos con citas
+          existentes y recalcula la disponibilidad de los servicios afectados.
         </p>
       </div>
     ),
@@ -844,17 +855,21 @@ const slides = [
       <div className="notifications-layout">
         <div>
           <EventPipeline />
+          <p className="support-text notification-note">
+            La integración con Firebase Cloud Messaging se apoya en eventos de dominio y listeners
+            Spring async para enviar avisos sin bloquear la operación principal.
+          </p>
           <div className="event-cloud">
             {[
               'Nueva reserva',
               'Reserva confirmada',
-              'Cancelacion',
+              'Cancelación',
               'Recordatorio cita',
               'Nueva reseña',
               'Solicitud ausencia',
               'Ausencia aprobada',
               'Ausencia rechazada',
-              'Fichajes',
+              'Recordatorio fichaje',
             ].map((event) => (
               <span key={event}>{event}</span>
             ))}
@@ -865,7 +880,7 @@ const slides = [
     ),
   },
   {
-    eyebrow: '14 / Reputacion',
+    eyebrow: '14 / Reputación',
     title: 'Reviews y reputación',
     body: (
       <div className="reviews-layout">
@@ -884,11 +899,11 @@ const slides = [
         <div>
           <BulletList
             items={[
-              'Valoracion de 1 a 5 estrellas solo en reservas confirmadas y finalizadas.',
+              'Valoración de 1 a 5 estrellas solo en reservas confirmadas y finalizadas.',
               'Una reseña por reserva para evitar duplicados.',
               'Solo el cliente dueño puede editar o borrar su reseña.',
-              'El negocio puede responder y contextualizar el feedback.',
-              'Agregados de media y cantidad en negocios y servicios.',
+              'El negocio puede responder públicamente y contextualizar el feedback.',
+              'Media y número de reseñas calculados en negocios y servicios.',
             ]}
           />
         </div>
@@ -897,7 +912,7 @@ const slides = [
   },
   {
     eyebrow: '15 / Archivos',
-    title: 'Imagenes y almacenamiento',
+    title: 'Imágenes y almacenamiento',
     body: (
       <div className="storage-layout">
         <StorageFlow />
@@ -910,8 +925,9 @@ const slides = [
           ))}
         </div>
         <p className="support-text">
-          La abstraccion FileStorage permite usar almacenamiento local hoy y migrar a S3/R2 sin romper
-          la API publica. Los archivos se sirven por endpoint publico con cache.
+          La abstracción FileStorage permite usar almacenamiento local en desarrollo y producción
+          inicial, y migrar a S3/R2 sin romper la API pública. Los archivos se sirven por endpoint
+          público con caché HTTP.
         </p>
       </div>
     ),
@@ -923,12 +939,12 @@ const slides = [
       <div className="migrations-layout">
         <div>
           <p className="lead small">
-            PostgreSQL aporta consistencia relacional y Flyway documenta la evolucion incremental del
-            esquema por migraciones versionadas.
+            PostgreSQL aporta consistencia relacional y Flyway documenta la evolución incremental del
+            esquema mediante migraciones versionadas, trazables y sincronizadas con el código.
           </p>
           <div className="safe-evolution">
             <Icon name="database" />
-            <span>cambio pequeno</span>
+            <span>cambio pequeño</span>
             <span>revisión</span>
             <span>migración</span>
             <span>despliegue seguro</span>
@@ -950,7 +966,7 @@ const slides = [
         <div className="screen-grid">
           {[
             'Explorar negocios',
-            'Filtros por categoria',
+            'Filtros por categoría',
             'Detalle de negocio',
             'Detalle de servicio',
             'Selector de disponibilidad',
@@ -964,15 +980,15 @@ const slides = [
           ))}
         </div>
         <p className="support-text">
-          Los tokens se guardan en almacenamiento seguro y el cliente puede ejecutar refresh automático
-          cuando recibe una respuesta 401.
+          La app usa token JWT en almacenamiento seguro, refresh automático ante 401, navegación
+          móvil y pantallas diferenciadas para cliente, negocio y trabajador.
         </p>
       </div>
     ),
   },
   {
     eyebrow: '18 / API',
-    title: 'API y documentacion',
+    title: 'API y documentación',
     body: (
       <div className="api-layout">
         <ApiMap />
@@ -983,7 +999,7 @@ const slides = [
           </div>
           <p>
             Documentación interactiva para probar endpoints, revisar contratos y facilitar la integración
-            con Flutter.
+            con Flutter mediante módulos REST separados por responsabilidad.
           </p>
           <div className="endpoint-list">
             <span>GET /businesses</span>
@@ -1006,11 +1022,11 @@ const slides = [
           ))}
         </div>
         <div className="ops-grid">
-          <InfoTile icon="check" title="Health checks" text="Estado de aplicacion y dependencias." tone="green" />
-          <InfoTile icon="database" title="Hikari" text="Pool de conexiones configurado." tone="blue" />
-          <InfoTile icon="server" title="Tomcat" text="Ajustes de servidor embebido." tone="cyan" />
-          <InfoTile icon="settings" title="Perfiles" text="Separacion dev y prod." tone="amber" />
-          <InfoTile icon="clock" title="Jobs programados" text="Tareas periódicas y recordatorios." tone="rose" />
+          <InfoTile icon="check" title="Health checks" text="Estado de aplicación y dependencias." tone="green" />
+          <InfoTile icon="database" title="HikariCP" text="Pool de conexiones ajustado por entorno." tone="blue" />
+          <InfoTile icon="server" title="Tomcat" text="Servidor embebido optimizado para despliegue." tone="cyan" />
+          <InfoTile icon="settings" title="Perfiles" text="Separación clara entre dev y prod." tone="amber" />
+          <InfoTile icon="clock" title="Jobs programados" text="Tareas periódicas y recordatorios automáticos." tone="rose" />
         </div>
       </div>
     ),
@@ -1028,9 +1044,9 @@ const slides = [
           <div className="next-steps">
             {[
               'Más tests unitarios e integración con Testcontainers',
-              'Migracion opcional a S3/R2',
-              'Dashboard admin de estadísticas',
-              'Pulido de experiencia Flutter',
+              'Migración opcional a S3/R2 mediante FileStorage',
+              'Dashboard admin de métricas y actividad',
+              'Pulido de UX, animaciones y accesibilidad Flutter',
             ].map((step) => (
               <div className="next-step" key={step}>
                 <Icon name="check" />
@@ -1050,61 +1066,104 @@ const slides = [
 
 function App() {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const slide = useMemo(() => slides[currentSlide], [currentSlide])
+  const scrollContainerRef = useRef(null)
+  const slideRefs = useRef([])
+
+  const scrollToSlide = (index) => {
+    const nextSlide = Math.min(Math.max(index, 0), slides.length - 1)
+    slideRefs.current[nextSlide]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    setCurrentSlide(nextSlide)
+  }
+
+  useEffect(() => {
+    const root = scrollContainerRef.current
+    const observedSlides = slideRefs.current.filter(Boolean)
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const activeEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+
+        if (activeEntry?.target.dataset.slideIndex) {
+          setCurrentSlide(Number(activeEntry.target.dataset.slideIndex))
+        }
+      },
+      {
+        root,
+        threshold: [0.45, 0.6, 0.75],
+      },
+    )
+
+    observedSlides.forEach((slideNode) => observer.observe(slideNode))
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
         event.preventDefault()
-        setCurrentSlide((current) => Math.min(current + 1, slides.length - 1))
+        scrollToSlide(currentSlide + 1)
       }
 
       if (['ArrowLeft', 'PageUp'].includes(event.key)) {
         event.preventDefault()
-        setCurrentSlide((current) => Math.max(current - 1, 0))
+        scrollToSlide(currentSlide - 1)
       }
 
       if (event.key === 'Home') {
-        setCurrentSlide(0)
+        scrollToSlide(0)
       }
 
       if (event.key === 'End') {
-        setCurrentSlide(slides.length - 1)
+        scrollToSlide(slides.length - 1)
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [currentSlide])
 
   return (
-    <main className="presentation-shell">
-      <section className="slide" aria-labelledby="slide-title">
-        <header className="slide-header">
-          <span>{slide.eyebrow}</span>
-          <span>Gipsi</span>
-        </header>
-        <div className="slide-content">
-          <div className="title-block">
-            <h1 id="slide-title">{slide.title}</h1>
-            {slide.subtitle && <p>{slide.subtitle}</p>}
-          </div>
-          {slide.body}
-        </div>
-        <footer className="slide-footer">
-          <div className="progress-track">
-            <span style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></span>
-          </div>
-          <strong>
-            {String(currentSlide + 1).padStart(2, '0')} / {slides.length}
-          </strong>
-        </footer>
-      </section>
+    <main className="presentation-shell" ref={scrollContainerRef}>
+      {slides.map((slide, index) => (
+        <section
+          className={`slide-frame ${index === currentSlide ? 'is-active' : ''}`}
+          data-slide-index={index}
+          key={slide.title}
+          ref={(node) => {
+            slideRefs.current[index] = node
+          }}
+          aria-current={index === currentSlide ? 'step' : undefined}
+        >
+          <article className="slide" aria-labelledby={`slide-title-${index}`}>
+            <header className="slide-header">
+              <span>{slide.eyebrow}</span>
+              <span>Gipsi</span>
+            </header>
+            <div className="slide-content">
+              <div className="title-block">
+                <h1 id={`slide-title-${index}`}>{slide.title}</h1>
+                {slide.subtitle && <p>{slide.subtitle}</p>}
+              </div>
+              {slide.body}
+            </div>
+            <footer className="slide-footer">
+              <div className="progress-track">
+                <span style={{ width: `${((index + 1) / slides.length) * 100}%` }}></span>
+              </div>
+              <strong>
+                {String(index + 1).padStart(2, '0')} / {slides.length}
+              </strong>
+            </footer>
+          </article>
+        </section>
+      ))}
 
       <nav className="deck-controls" aria-label="Navegacion de diapositivas">
         <button
           type="button"
-          onClick={() => setCurrentSlide((current) => Math.max(current - 1, 0))}
+          onClick={() => scrollToSlide(currentSlide - 1)}
           disabled={currentSlide === 0}
           aria-label="Diapositiva anterior"
         >
@@ -1112,7 +1171,7 @@ function App() {
         </button>
         <button
           type="button"
-          onClick={() => setCurrentSlide((current) => Math.min(current + 1, slides.length - 1))}
+          onClick={() => scrollToSlide(currentSlide + 1)}
           disabled={currentSlide === slides.length - 1}
           aria-label="Diapositiva siguiente"
         >
